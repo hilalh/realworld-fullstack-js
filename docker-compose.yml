@@ -1,0 +1,62 @@
+version: '3'
+networks: 
+  mern:
+    driver: bridge
+services:  
+  mongo:
+    image: mongo:3.6
+    container_name: mongo.dev
+    hostname: mongo.dev
+    environment:
+      - MONGO_DATA_DIR=/data/db
+      - MONGO_LOG_DIR=/dev/null
+    volumes:
+      - ./data/db:/data/db
+    networks: 
+      - mern
+    tty: true
+    stdin_open: true
+  frontend:
+    image: hilalh/frontend:latest
+    container_name: front.dev
+    hostname: front.dev
+    networks: 
+      - mern
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "4100:4100"
+      - "35729:35729"
+    environment:
+      - API_URL=http://back.dev:3000/api
+      - MONGODB_URI=mongodb://mongo.dev:27017/test 
+    depends_on: 
+     - mongo 
+     - backend
+    volumes:
+     - ./frontend:/starter
+    #  This mounts the container's inner module to the local context
+     - /starter/node_modules
+    tty: true
+    stdin_open: true
+  backend:
+    image: hilalh/backend:latest
+    hostname: back.dev
+    container_name: back.dev
+    networks: 
+      - mern
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - MONGODB_URI=mongodb://mongo.dev:27017/test 
+    depends_on: 
+      - mongo 
+    volumes:
+      - ./backend:/starter
+      - /starter/node_modules
+    tty: true
+    stdin_open: true
