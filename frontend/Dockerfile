@@ -3,13 +3,12 @@ FROM node:8-slim
 WORKDIR /starter
 ENV NODE_ENV development
 # Copy file for npm install first
-COPY ./package*.json /starter
+COPY ./package*.json /starter/
 # Perform installations
 RUN npm install -g create-react-app
 RUN npm install
 # Copy the rest of the files
-COPY . /starter
-
+COPY . /starter/
 
 # Expose web and hot reloading ports
 EXPOSE 4100

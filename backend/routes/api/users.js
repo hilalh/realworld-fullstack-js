@@ -66,7 +66,7 @@ router.post('/users', function(req, res, next){
   user.username = req.body.user.username;
   user.email = req.body.user.email;
   user.setPassword(req.body.user.password);
-
+  console.log(`Registering ${user.username}`)
   user.save().then(function(){
     return res.json({user: user.toAuthJSON()});
   }).catch(next);

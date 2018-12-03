@@ -56,6 +56,7 @@ export default (state = {}, action) => {
         currentPage: 0,
         tab: action.tab
       };
+
     case HOME_PAGE_UNLOADED:
       return {};
     case CHANGE_TAB:

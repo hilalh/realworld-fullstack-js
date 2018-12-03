@@ -19,6 +19,7 @@ const mapDispatchToProps = dispatch => ({
   onChangeUsername: value =>
     dispatch({ type: UPDATE_FIELD_AUTH, key: 'username', value }),
   onSubmit: (username, email, password) => {
+    console.log(`Calling registration for ${username}`)
     const payload = agent.Auth.register(username, email, password);
     dispatch({ type: REGISTER, payload })
   },

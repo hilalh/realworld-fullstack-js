@@ -15,6 +15,7 @@ const Promise = global.Promise;
 const mapStateToProps = state => ({
   ...state.home,
   appName: state.common.appName,
+  appTagline: state.common.appTagline,
   token: state.common.token
 });
 
@@ -45,7 +46,7 @@ class Home extends React.Component {
     return (
       <div className="home-page">
 
-        <Banner token={this.props.token} appName={this.props.appName} />
+        <Banner token={this.props.token} appTagline={this.props.appTaglone} appName={this.props.appName} />
 
         <div className="container page">
           <div className="row">

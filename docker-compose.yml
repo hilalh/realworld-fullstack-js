@@ -14,6 +14,8 @@ services:
       - ./data/db:/data/db
     networks: 
       - mern
+    ports:
+      - "27017:27017"
     tty: true
     stdin_open: true
   frontend:
@@ -29,8 +31,7 @@ services:
       - "4100:4100"
       - "35729:35729"
     environment:
-      - API_URL=http://back.dev:3000/api
-      - MONGODB_URI=mongodb://mongo.dev:27017/test 
+      - REACT_APP_API_URL=http://localhost:3000/api
     depends_on: 
      - mongo 
      - backend

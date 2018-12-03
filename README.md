@@ -4,7 +4,12 @@ Simply use `docker-compose up / down` to bring the project up and down. Great fo
 
 TODO:
 - [x] Connect front end to local backend
-- [ ] Hot reloading for front end
+- [x] Hot reloading for front end
+- [ ] Hot reloading for back end
 - [ ] Documentation (swagger) for backend
 - [ ] Conversion of backend to AWS lambdas
 - [ ] Deployment of front end to netlify / S3 + Cloudfront
+
+BUGS:
+- [x] Resolve react-redux action payloads when data is present
+  * Resolved by giving out a check for empties

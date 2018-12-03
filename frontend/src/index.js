@@ -7,7 +7,8 @@ import { Route, Switch } from 'react-router-dom';
 import { ConnectedRouter } from 'react-router-redux';
 
 import App from './components/App';
-
+console.log(`Environment:`)
+console.log(process.env)
 ReactDOM.render((
   <Provider store={store}>
     <ConnectedRouter history={history}>

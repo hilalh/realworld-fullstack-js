@@ -19,6 +19,7 @@ import {
 
 const defaultState = {
   appName: 'Conduit',
+  apiTagline: 'A demo tagline.',
   token: null,
   viewChangeCounter: 0
 };

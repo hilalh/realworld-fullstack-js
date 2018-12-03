@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Banner = ({ appName, token }) => {
+const Banner = ({ appName, appTagline, token }) => {
   if (token) {
     return null;
   }
@@ -10,7 +10,7 @@ const Banner = ({ appName, token }) => {
         <h1 className="logo-font">
           {appName.toLowerCase()}
         </h1>
-        <p>A place to share your knowledge.</p>
+        <p>{appTagline}</p>
       </div>
     </div>
   );

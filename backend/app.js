@@ -34,12 +34,20 @@ mongoose.connect(process.env.MONGODB_URI);
 if(!isProduction){
   mongoose.set('debug', true);  
 }
+
+mongoose.connection.once('open', function() {
+  console.info('MongoDB event open');
+  console.debug(`MongoDB connected ${process.env.MONGODB_URI}`);
+  
+
+
+
+  // return resolve();
+  return app.emit('ready'); 
+});
+
 mongoose.connection.on('error', function(err) {
-  console.log(`DB Error: ${err.message}`); });
-mongoose.connection.once('open', function() { 
-  // All OK - fire (emit) a ready event. 
-  console.log('DB Info: Mongo is ready!')
-  app.emit('ready'); 
+  console.error('MongoDB event error: ' + err);
 });
 
 require('./models/User');
