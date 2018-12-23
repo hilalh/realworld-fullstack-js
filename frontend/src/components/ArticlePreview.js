@@ -53,6 +53,9 @@ const ArticlePreview = props => {
           <button className={favoriteButtonClass} onClick={handleClick}>
             <i className="ion-heart"></i> {article.favoritesCount}
           </button>
+          <button className={favoriteButtonClass} onClick={handleClick}>
+            <i className="ion-folder"></i> {article.savesCount}
+          </button>
         </div>
       </div>
 

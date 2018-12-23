@@ -310,6 +310,105 @@ router.delete('/:article', auth.required, function(req, res, next) {
 
 /**
  * @swagger
+ * /api/articles/{article}/report:
+ *   post:
+ *     tags:
+ *       - Articles
+ *     description: Reports an article
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: article
+ *         description: article's id
+ *         in: path
+ *         required: true
+ *         type: integer
+ *     responses:
+ *       200:
+ *         description: Successfully created
+ */
+router.post('/:article/report', auth.required, function(req, res, next) {
+  var articleId = req.article._id;
+
+  User.findById(req.payload.id).then(function(user){
+    if (!user) { return res.sendStatus(401); }
+
+    return article.report(articleId).then(function(){
+      return req.article.updateReportCount().then(function(article){
+        return res.json({article: article.toJSONFor(user)});
+      });
+    });
+  }).catch(next);
+});
+
+/**
+ * @swagger
+ * /api/articles/{article}/save:
+ *   post:
+ *     tags:
+ *       - Articles
+ *     description: Saves an article
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: article
+ *         description: article's id
+ *         in: path
+ *         required: true
+ *         type: integer
+ *     responses:
+ *       200:
+ *         description: Successfully created
+ */
+router.post('/:article/save', auth.required, function(req, res, next) {
+  var articleId = req.article._id;
+
+  User.findById(req.payload.id).then(function(user){
+    if (!user) { return res.sendStatus(401); }
+
+    return user.save(articleId).then(function(){
+      return req.article.updateSaveCount().then(function(article){
+        return res.json({article: article.toJSONFor(user)});
+      });
+    });
+  }).catch(next);
+});
+
+/**
+ * @swagger
+ * /api/articles/{article}/save:
+ *   delete:
+ *     tags:
+ *       - Articles
+ *     description: Unsaves an article
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: article
+ *         description: article's id
+ *         in: path
+ *         required: true
+ *         type: integer
+ *     responses:
+ *       200:
+ *         description: Successfully deleted
+ */
+router.delete('/:article/save', auth.required, function(req, res, next) {
+  var articleId = req.article._id;
+
+  User.findById(req.payload.id).then(function (user){
+    if (!user) { return res.sendStatus(401); }
+
+    return user.unsave(articleId).then(function(){
+      return req.article.updateSaveCount().then(function(article){
+        return res.json({article: article.toJSONFor(user)});
+      });
+    });
+  }).catch(next);
+});
+
+/**
+ * @swagger
  * /api/articles/{article}/favorite:
  *   post:
  *     tags:
@@ -376,7 +475,7 @@ router.delete('/:article/favorite', auth.required, function(req, res, next) {
 
 /**
  * @swagger
- * /api/articles/feed:
+ * /api/articles/comments:
  *   get:
  *     tags:
  *       - Articles

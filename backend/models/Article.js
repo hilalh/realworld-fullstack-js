@@ -9,6 +9,8 @@ var ArticleSchema = new mongoose.Schema({
   description: String,
   body: String,
   favoritesCount: {type: Number, default: 0},
+  savessCount: {type: Number, default: 0},
+  reportedBy: {type: Number, default: 0},
   comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }],
   tagList: [{ type: String }],
   author: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
@@ -51,6 +53,34 @@ ArticleSchema.methods.toJSONFor = function(user){
     favoritesCount: this.favoritesCount,
     author: this.author.toProfileJSONFor(user)
   };
+};
+
+ArticleSchema.methods.report = function(id, user){
+  if(this.reportedBy.indexOf(id) === -1){
+    this.reportedBy.push(user.id);
+  }
+
+  return this.save();
+};
+
+ArticleSchema.methods.isReported = function(user){
+  return this.reportedBy.some(function(reportedBy){
+    return reportedBy.toString() === user.id.toString();
+  });
+};
+
+// ArticleSchema.methods.updateReportCount = function() {
+//   var article = this;
+
+//   return this.{
+//     article.reportCount = count;
+
+//     return article.save();
+//   });
+// };
+
+ArticleSchema.methods.toBeRemoved = function(id){
+  return this.reportedBy.length >= 3
 };
 
 mongoose.model('Article', ArticleSchema);

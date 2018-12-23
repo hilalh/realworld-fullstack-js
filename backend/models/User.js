@@ -10,6 +10,7 @@ var UserSchema = new mongoose.Schema({
   bio: String,
   image: String,
   favorites: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Article' }],
+  saves: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Article' }],
   following: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   hash: String,
   salt: String
@@ -71,11 +72,32 @@ UserSchema.methods.unfavorite = function(id){
   return this.save();
 };
 
+
 UserSchema.methods.isFavorite = function(id){
   return this.favorites.some(function(favoriteId){
     return favoriteId.toString() === id.toString();
   });
 };
+
+UserSchema.methods.save = function(id){
+  if(this.saves.indexOf(id) === -1){
+    this.saves.push(id);
+  }
+
+  return this.save();
+};
+
+UserSchema.methods.unsave = function(id){
+  this.saves.remove(id);
+  return this.save();
+};
+
+UserSchema.methods.isSaved = function(id){
+  return this.saves.some(function(saveId){
+    return saveId.toString() === id.toString();
+  });
+};
+
 
 UserSchema.methods.follow = function(id){
   if(this.following.indexOf(id) === -1){
