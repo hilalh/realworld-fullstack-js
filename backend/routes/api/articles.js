@@ -5,7 +5,20 @@ var Comment = mongoose.model('Comment');
 var User = mongoose.model('User');
 var auth = require('../auth');
 
-// Preload article objects on routes with ':article'
+/**
+ * @swagger
+ * definitions:
+ *   Article:
+ *     properties:
+ *       name:
+ *         type: string
+ *       breed:
+ *         type: string
+ *       age:
+ *         type: integer
+ *       sex:
+ *         type: string
+ */
 router.param('article', function(req, res, next, slug) {
   Article.findOne({ slug: slug})
     .populate('author')
@@ -17,7 +30,18 @@ router.param('article', function(req, res, next, slug) {
       return next();
     }).catch(next);
 });
-
+/**
+ * @swagger
+ * definitions:
+ *   Comment:
+ *     properties:
+ *       commenter:
+ *         type: string
+ *       content:
+ *         type: string
+ *       flagged:
+ *         type: boolean
+ */
 router.param('comment', function(req, res, next, id) {
   Comment.findById(id).then(function(comment){
     if(!comment) { return res.sendStatus(404); }
@@ -86,6 +110,21 @@ router.get('/', auth.optional, function(req, res, next) {
   }).catch(next);
 });
 
+/**
+ * @swagger
+ * /api/articles/feed:
+ *   get:
+ *     tags:
+ *       - Articles
+ *     description: Returns all articles
+ *     produces:
+ *       - application/json
+ *     responses:
+ *       200:
+ *         description: An array of articles
+ *         schema:
+ *           $ref: '#/definitions/Article'
+ */
 router.get('/feed', auth.required, function(req, res, next) {
   var limit = 20;
   var offset = 0;
@@ -121,7 +160,26 @@ router.get('/feed', auth.required, function(req, res, next) {
     }).catch(next);
   });
 });
-
+/**
+ * @swagger
+ * /api/articles:
+ *   post:
+ *     tags:
+ *       - Articles
+ *     description: Creates a new articles
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: tarun
+ *         description: articles object
+ *         in: body
+ *         required: true
+ *         schema:
+ *           $ref: '#/definitions/Article'
+ *     responses:
+ *       200:
+ *         description: Successfully created
+ */
 router.post('/', auth.required, function(req, res, next) {
   User.findById(req.payload.id).then(function(user){
     if (!user) { return res.sendStatus(401); }
@@ -136,8 +194,22 @@ router.post('/', auth.required, function(req, res, next) {
     });
   }).catch(next);
 });
+/**
+ * @swagger
+ * /api/articles/{article}:
+ *   get:
+ *     tags:
+ *       - Articles
+ *     description: Returns all users
+ *     produces:
+ *       - application/json
+ *     responses:
+ *       200:
+ *         description: An array of users
+ *         schema:
+ *           $ref: '#/definitions/Article'
+ */
 
-// return a article
 router.get('/:article', auth.optional, function(req, res, next) {
   Promise.all([
     req.payload ? User.findById(req.payload.id) : null,
@@ -149,7 +221,31 @@ router.get('/:article', auth.optional, function(req, res, next) {
   }).catch(next);
 });
 
-// update article
+/**
+ * @swagger
+ * /api/articles/{article}:
+ *   put:
+ *     tags: 
+ *        - Articles
+ *     description: Updates a single articles
+ *     produces: application/json
+ *     parameters:
+ *       - name: article
+ *         description: article's id
+ *         in: path
+ *         required: true
+ *         type: integer
+ *       - name: data
+ *         in: body
+ *         description: Fields for the articles resource
+ *         schema:
+ *            type: array
+ *            $ref: '#/definitions/Article'
+ *     responses:
+ *       200:
+ *         description: Successfully updated
+ */
+
 router.put('/:article', auth.required, function(req, res, next) {
   User.findById(req.payload.id).then(function(user){
     if(req.article.author._id.toString() === req.payload.id.toString()){
@@ -178,7 +274,26 @@ router.put('/:article', auth.required, function(req, res, next) {
   });
 });
 
-// delete article
+
+/**
+ * @swagger
+ * /api/articles/{article}:
+ *   delete:
+ *     tags:
+ *       - Articles
+ *     description: Deletes a single article
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: article
+ *         description: article's id
+ *         in: path
+ *         required: true
+ *         type: integer
+ *     responses:
+ *       200:
+ *         description: Successfully deleted
+ */
 router.delete('/:article', auth.required, function(req, res, next) {
   User.findById(req.payload.id).then(function(user){
     if (!user) { return res.sendStatus(401); }
@@ -193,7 +308,25 @@ router.delete('/:article', auth.required, function(req, res, next) {
   }).catch(next);
 });
 
-// Favorite an article
+/**
+ * @swagger
+ * /api/articles/{article}/favorite:
+ *   post:
+ *     tags:
+ *       - Articles
+ *     description: Favorites an article
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: article
+ *         description: article's id
+ *         in: path
+ *         required: true
+ *         type: integer
+ *     responses:
+ *       200:
+ *         description: Successfully created
+ */
 router.post('/:article/favorite', auth.required, function(req, res, next) {
   var articleId = req.article._id;
 
@@ -208,7 +341,25 @@ router.post('/:article/favorite', auth.required, function(req, res, next) {
   }).catch(next);
 });
 
-// Unfavorite an article
+/**
+ * @swagger
+ * /api/articles/{article}/favorite:
+ *   delete:
+ *     tags:
+ *       - Articles
+ *     description: Unfavorites an article
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: article
+ *         description: article's id
+ *         in: path
+ *         required: true
+ *         type: integer
+ *     responses:
+ *       200:
+ *         description: Successfully deleted
+ */
 router.delete('/:article/favorite', auth.required, function(req, res, next) {
   var articleId = req.article._id;
 
@@ -223,7 +374,21 @@ router.delete('/:article/favorite', auth.required, function(req, res, next) {
   }).catch(next);
 });
 
-// return an article's comments
+/**
+ * @swagger
+ * /api/articles/feed:
+ *   get:
+ *     tags:
+ *       - Articles
+ *     description: Returns all articles
+ *     produces:
+ *       - application/json
+ *     responses:
+ *       200:
+ *         description: An array of comments
+ *         schema:
+ *           $ref: '#/definitions/Comment'
+ */
 router.get('/:article/comments', auth.optional, function(req, res, next){
   Promise.resolve(req.payload ? User.findById(req.payload.id) : null).then(function(user){
     return req.article.populate({
@@ -244,7 +409,31 @@ router.get('/:article/comments', auth.optional, function(req, res, next){
   }).catch(next);
 });
 
-// create a new comment
+/**
+ * @swagger
+ * /api/articles/{article}/comments:
+ *   post:
+ *     tags:
+ *       - Articles
+ *     description: Create a new comment
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: article
+ *         description: article's id
+ *         in: path
+ *         required: true
+ *         type: integer
+ *       - name: comment
+ *         description: comment object
+ *         in: body
+ *         required: true
+ *         schema:
+ *           $ref: '#/definitions/Comment'
+ *     responses:
+ *       200:
+ *         description: Successfully created
+ */
 router.post('/:article/comments', auth.required, function(req, res, next) {
   User.findById(req.payload.id).then(function(user){
     if(!user){ return res.sendStatus(401); }
@@ -262,7 +451,30 @@ router.post('/:article/comments', auth.required, function(req, res, next) {
     });
   }).catch(next);
 });
-
+/**
+ * @swagger
+ * /api/articles/{article}/comments/{comment}:
+ *   delete:
+ *     tags:
+ *       - Articles
+ *     description: Deletes a single article
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: article
+ *         description: article's id
+ *         in: path
+ *         required: true
+ *         type: integer
+ *       - name: comment
+ *         description: comment's id
+ *         in: path
+ *         required: true
+ *         type: integer
+ *     responses:
+ *       200:
+ *         description: Successfully deleted
+ */
 router.delete('/:article/comments/:comment', auth.required, function(req, res, next) {
   if(req.comment.author.toString() === req.payload.id.toString()){
     req.article.comments.remove(req.comment._id);

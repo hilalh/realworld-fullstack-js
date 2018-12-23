@@ -5,8 +5,10 @@ Simply use `docker-compose up / down` to bring the project up and down. Great fo
 TODO:
 - [x] Connect front end to local backend
 - [x] Hot reloading for front end
-- [ ] Hot reloading for back end
-- [ ] Documentation (swagger) for backend
+- [x] Hot reloading for back end
+- [x] Documentation (swagger) for backend
+  - [x] Document /api/articles as an example
+  - [ ] Complete the rest of the documentation
 - [ ] Conversion of backend to AWS lambdas
 - [ ] Deployment of front end to netlify / S3 + Cloudfront
 
